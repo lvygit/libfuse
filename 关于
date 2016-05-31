@@ -1,0 +1,29 @@
+关于encfs，参见:
+http://www.arg0.net/encfsintro
+关于百度云盘linux下的客户端bypy, 参见：
+https://github.com/houtianze/bypy
+
+操作步骤：
+一.有关encfs的操作：
+1.mkdir -p /home2/repo/srcg
+2.mkdir /home2/repo.enc !这是加密的目录
+3.encfs /home2/repo.enc /home2/repo !提示输入密码，这是加密文件系统密码，必须牢记
+
+执行完上述操作，repo.enc安装到repo下，写进repo的文件/目录将被加密后出现在repo.enc里，内容和文件名都将被加密。执行fusermount -u /home2/repo, 卸载加密文件系统，/home2/repo变空。
+
+二.git的有关操作：
+4. cd /home2/repo/srcg; git init --bare
+5. cd ~/srcg;
+git remote add enc file:///home2/repo/srcg !~/srcg是本地工作目录
+git push enc master !
+
+三.与百度云盘的同步
+将加密后的repo.enc同步到百度云盘的/gitrepo目录下：
+首次操作，上传整个目录：
+bypy.py upload /home2/repo.enc /gitrepo
+
+以后本地更新后，push之后执行：
+bypy.py syncup /home2/repo.enc /gitrepo True
+
+pull之前执行：
+bypy.py syncdown /gitrepo /home2/repo.enc True
